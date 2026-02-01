@@ -8,10 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sushi Master">
-
 <link rel="apple-touch-icon" href="nigiri.png">
-<link rel="icon" type="image/png" href="nigiri.png">
 
 <style>
     body {
@@ -23,7 +20,7 @@
         align-items: center;
         height: 100vh;
         margin: 0;
-        overflow: hidden; /* Evita rebote en móvil */
+        overflow: hidden;
     }
 
     .container {
@@ -31,8 +28,7 @@
         padding: 40px; 
         border-radius: 30px;
         box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        width: 85%; /* Ajuste para móviles */
-        max-width: 320px;
+        width: 320px;
     }
 
     h1 {
@@ -62,7 +58,7 @@
         height: auto;
         cursor: pointer;
         user-select: none;
-        -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en móvil */
+        -webkit-tap-highlight-color: transparent;
         filter: drop-shadow(0 10px 10px rgba(0,0,0,0.05));
     }
 
@@ -79,16 +75,17 @@
     .controls {
         display: flex;
         gap: 15px;
+        margin-top: 10px;
     }
 
     button {
         flex: 1;
         font-size: 14px;
         font-weight: bold;
-        padding: 15px;
+        padding: 12px;
         cursor: pointer;
         border: none;
-        border-radius: 15px;
+        border-radius: 12px;
         background-color: #f1f2f6;
         color: #57606f;
     }
@@ -104,34 +101,61 @@
 <div class="container">
     <h1>Sushi Master</h1>
     <div id="count">0</div>
+
     <div class="sushi-wrapper">
         <img src="nigiri.png" class="sushi" id="nigiri" alt="Nigiri">
     </div>
+
     <div class="controls">
-        <button id="minus"> - 1 </button>
-        <button class="btn-reset" id="reset">Reset</button>
+        <button id="minus">Restar -1</button>
+        <button class="btn-reset" id="reset">Reiniciar</button>
     </div>
 </div>
 
 <script>
-    let count = 0;
+    // 1. Intentar cargar el número guardado al abrir
+    let count = parseInt(localStorage.getItem("sushiCount")) || 0;
+    
     const countDisplay = document.getElementById("count");
     const nigiri = document.getElementById("nigiri");
     const minus = document.getElementById("minus");
     const reset = document.getElementById("reset");
 
-    function update() { countDisplay.textContent = count; }
+    // Mostrar el número guardado nada más empezar
+    updateDisplay();
+
+    function updateDisplay() {
+        countDisplay.textContent = count;
+        // Guardar el número actual en la memoria del móvil
+        localStorage.setItem("sushiCount", count);
+    }
 
     nigiri.addEventListener("click", () => {
         count++;
-        update();
+        updateDisplay();
         nigiri.classList.remove("jump");
         void nigiri.offsetWidth; 
         nigiri.classList.add("jump");
     });
 
-    minus.addEventListener("click", () => { if (count > 0) { count--; update(); } });
-    reset.addEventListener("click", () => { count = 0; update(); });
+    minus.addEventListener("click", () => {
+        if (count > 0) {
+            count--;
+            updateDisplay();
+        }
+    });
+
+    reset.addEventListener("click", () => {
+        if(confirm("¿Seguro que quieres borrar tu progreso?")) {
+            count = 0;
+            updateDisplay();
+        }
+    });
+</script>
+
+</body>
+</html>
 </script>
 </body>
 </html>
+
